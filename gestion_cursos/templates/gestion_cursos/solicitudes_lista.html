@@ -1,0 +1,96 @@
+{% extends 'gestion_personas/layoutNav.html' %}
+{% load static %}
+
+{% block content %}
+
+<main id="main" class="main">
+
+  <div class="pagetitle" style="width: 100%">
+    <h1>Solicitud a cursos</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item">Lista de solicitudes</li>
+        <li class="breadcrumb-item active">Cursos</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="alert{% if message.tags == 'error' %} alert-danger{% elif message.tags == 'warning' %} alert-warning{% else %} alert-success{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Alumnos por Curso</h5>
+
+            <!-- Inscripciones Table -->
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Curso</th>
+                  <th scope="col">Alumno</th>
+                  <th scope="col">Fecha de Solicitud</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Cupo</th>
+                  <th scope="col">Inscriptos</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for solicitud in solicitudes %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ solicitud.curso }}</td>
+                <td>{{ solicitud.alumno }}</td>
+                <td>{{ solicitud.fecha_solicitud }}</td>
+                <td>{{ solicitud.get_estado_display }}</td>
+                <td>
+                  {% if solicitud.cupo_disponible > 0 %}
+                    {{ solicitud.cupo_disponible }}
+                  {% else %}
+                    Sin Vacantes
+                  {% endif %}
+                </td>
+                <td>{{ solicitud.inscriptos_count }}</td>
+                <td>
+                  {% if solicitud.cupo_disponible > 0 %}
+                    <div class="d-flex flex-column">
+                      <a class="btn btn-success btn-sm mb-2" href="{% url 'cursos:aceptar_solicitud' solicitud.id %}">Aceptar</a>
+                      <a class="btn btn-warning btn-sm mb-2" href="{% url 'cursos:pendiente_solicitud' solicitud.id %}">Pendiente</a>
+                      <a class="btn btn-danger btn-sm mb-2" href="{% url 'cursos:rechazar_solicitud' solicitud.id %}">Rechazar</a>                      
+                    </div>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="8">No se encontraron solicitudes de inscripción.</td>
+              </tr>
+              {% endfor %}
+
+              </tbody>
+            </table>
+            <!-- End Inscripciones Table -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+</main><!-- End #main -->
+
+
+{% endblock %}

@@ -1,0 +1,225 @@
+{% extends 'gestion_personas/layoutNav.html' %}
+
+<!-- ======= Extiende de layoutNav para la pagina inicial ======= -->
+
+
+{% load static %}
+
+{% block content %}
+
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Dashboard Alumnos</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Alumnos</a></li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+        {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <div class="alert{% if message.tags == 'error' %} alert-danger{% elif message.tags == 'warning' %} alert-warning{% else %} alert-success{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Left side columns -->
+        <div class="col-lg-8">
+          <div class="row">
+
+
+            <!-- Listado de cursos -->
+            <div class="col-12">
+              <div class="card recent-sales overflow-auto">
+
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filtro</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Full Stack Desarrollo Web</a></li>
+                    <li><a class="dropdown-item" href="#">Testing Automatizado</a></li>
+                    <li><a class="dropdown-item" href="#">Diseño UX/UI</a></li>
+                    <li><a class="dropdown-item" href="#">Big Data / Análisis de Datos</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">Cursos <span>| 2° cuatrimestre 2023</span></h5>
+
+                  <table class="table table-borderless datatable">
+                    <thead>
+                      <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Cupo</th>
+                        <th scope="col">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for curso in cursos %}
+                      <tr>
+                        <th scope="row">
+                          <a href="#">
+                              <img src="{{ curso.photo.url }}" alt="" style="width: 50px; height: 50px; border-radius: 50%;">
+                          </a>
+                      </th>                      
+                        <td><a href="#" class="text-primary">{{ curso.nombre }}</a></td>
+                        <td>{{ curso.cupo}}</td>
+                        {% if curso.cupo > 0 %}
+                        <td>
+                          <form method="POST" action="{% url 'cursos:solicitud_inscripcion' curso.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="alumno_id" value="{{ alumno.id }}">
+                            <button type="submit" class="btn btn-success">Solicitar inscripción</button>
+                        </form>                        
+                        </td>
+                        {% else %}
+                            <td class="text-start"><button class="btn btn-danger">Sin vacantes</button></td>
+                        {% endif %}
+
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+                </div>
+
+              </div>
+            </div><!-- End Recent Sales -->
+
+            <div class="col-12">
+              <div class="card top-selling overflow-auto">
+                <div class="card-body pb-0">
+                  <h5 class="card-title">Profesores <span>| 2023</span></h5>
+                  <table class="table table-borderless">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th scope="col">Nombre y Apellido</th>
+                        <th scope="col">Cursos</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for profesor in profesores %}
+                      <tr>
+                        <th scope="row"><a href="#"><img src="{{ profesor.photo.url }}" alt=""></a></th>
+                        <td><a href="#" class="text-primary fw-bold">{{ profesor.user.first_name }} {{ profesor.user.last_name }}</a></td>
+                        <td>
+                          {% for curso in profesor.curso_set.all %}
+                            <p>{{ curso.nombre }}</p>
+                          {% endfor %}                       
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            
+            
+
+          </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+
+          <!-- Calendario cursos -->
+          <!--div class="card">
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">Today</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+                <li><a class="dropdown-item" href="#">This Year</a></li>
+              </ul>
+            </div-->
+
+            <div class="card-body">
+              <h5 class="card-title"> Calendario actividades <span>| 2023</span></h5>
+
+              <div class="activity">
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">6 junio</div>
+                  <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                  <div class="activity-content">
+                    Presentación actividades<a href="#" class="fw-bold text-dark"> Codo a Codo</a> 4.0
+                  </div>
+                </div><!-- End activity item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">12 junio</div>
+                  <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                  <div class="activity-content">
+                    Apertura de Inscripciones
+                  </div>
+                </div><!-- End activity item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">15 junio</div>
+                  <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
+                  <div class="activity-content">
+                    Adjudicación 
+                  </div>
+                </div><!-- End activity item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">1 agosto</div>
+                  <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
+                  <div class="activity-content">
+                    Comienzo clases <a href="#" class="fw-bold text-dark">Presentación</a> suerte
+                  </div>
+                </div><!-- End activity item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">1 sept.</div>
+                  <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
+                  <div class="activity-content">
+                    Est sit eum reiciendis exercitationem
+                  </div>
+                </div><!-- End activity item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">1 nov.</div>
+                  <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
+                  <div class="activity-content">
+                    Dicta dolorem harum nulla eius. Ut quidem quidem sit quas
+                  </div>
+                </div><!-- End activity item-->
+
+              </div>
+
+            </div>
+          </div><!-- End Recent Activity -->
+
+
+        </div><!-- End Right side columns -->
+
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+
+</body>
+
+{% endblock %}

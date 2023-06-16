@@ -1,0 +1,149 @@
+{% load static %}
+ 
+{% block content %}
+
+ <!-- ======= Sidebar ======= -->
+ <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " href="#dashboard">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+      {% if request.user.alumno.estado == 'Registro' %}
+      <p style="color: red;">Datos por completar</p>
+      {% else %}
+  
+
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-menu-button-wide"></i><span>Categorías</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'cursos:lista_categorias' %}" >
+              <i class="bi bi-circle"></i><span>Ver</span>
+            </a>
+          </li>
+          {% if request.user.tutor %}
+          <li>
+            <a href="{% url 'cursos:crear_categoria' %}" >
+              <i class="bi bi-circle"></i><span>Crear</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </li><!-- End Categorias Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Cursos</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+
+        <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+        {% if request.user.alumno %}
+        <li>
+          <a href="{% url 'personas:dashboardAlumnos' %}">
+            <i class="bi bi-circle"></i><span>Ver</span>
+          </a>
+        </li>
+        {% endif %}
+        {% if request.user.tutor or request.user.docente %}
+        <li>
+          <a href="{% url 'cursos:lista_cursos' %}">
+            <i class="bi bi-circle"></i><span>Ver</span>
+          </a>
+        </li>
+        {% if request.user.tutor %}
+        <li>
+          <a href="{% url 'cursos:crear_curso' %}">
+            <i class="bi bi-circle"></i><span>Crear</span>
+          </a>
+        </li>
+        {% endif %}
+        {% endif %}
+
+      </ul>
+
+
+      </li><!-- End Cursos Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-layout-text-window-reverse"></i><span>Alumnos</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          {% if request.user.alumno %}
+            <!--li>
+              <a href="#">
+                <i class="bi bi-circle"></i><span>Alumno perfil</span>
+              </a>
+            </li-->
+          {% endif %}
+          
+          {% if request.user.docente %}
+            <li>
+                <a href="{% url 'personas:ver_alumnos_docente' %}">
+                    <i class="bi bi-circle"></i><span>Docente lista suyos</span>
+                </a>
+            </li>
+          {% endif %}
+      
+          
+          {% if request.user.tutor %}
+          <li>
+            <a href="{% url 'personas:ver_alumnos' %}">
+              <i class="bi bi-circle"></i><span>Alumno lista gral</span>
+            </a>
+          </li>
+          
+          {% endif %}
+          
+          {% if request.user.alumno %}
+          <!--li>
+            <a href="tables-data.html">
+              <i class="bi bi-circle"></i><span>Proyecto crud</span>
+            </a>
+          </li>
+          <li>
+            <a href="tables-data.html">
+              <i class="bi bi-circle"></i><span>Proyectos suyos</span>
+            </a>
+          </li-->
+    
+          {% endif %}
+        </ul>
+      </li><!-- End Alumnos Nav -->
+      {% endif %}
+
+      {% if request.user.tutor %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#formsi-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Inscripción</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="formsi-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'cursos:solicitudes_lista' %}">
+              <i class="bi bi-circle"></i><span>Asignar a curso</span>
+            </a>
+          </li>
+          
+
+        
+       
+          {% endif %}
+
+       
+        </ul>
+      </li><!-- End Inscribirme Nav -->
+
+    </ul>
+  
+
+  </aside><!-- End Sidebar-->
+
+{% endblock %}

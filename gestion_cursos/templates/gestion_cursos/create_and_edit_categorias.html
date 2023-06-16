@@ -1,0 +1,20 @@
+{% extends 'gestion_personas/layoutNav.html' %}
+
+{% load static %}
+
+{% block content %}
+<main id="main" class="main">
+  <h2>{% if object %}Editar{% else %}Crear{% endif %} categoría</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Guardar</button>
+  </form>
+  {% for message in messages %}
+    <div class="alert{% if message.tags == 'error' %} alert-danger{% elif message.tags == 'success' %} alert-success{% endif %}" role="alert">
+      {{ message }}
+    </div>
+  {% endfor %}
+</main>
+{% endblock %}
+
