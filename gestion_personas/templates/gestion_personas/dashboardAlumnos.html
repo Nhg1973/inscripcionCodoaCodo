@@ -2,8 +2,9 @@
 
 <!-- ======= Extiende de layoutNav para la pagina inicial ======= -->
 
-
+{% load custom_filters %}
 {% load static %}
+
 
 {% block content %}
 
@@ -69,29 +70,31 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {% for curso in cursos %}
-                      <tr>
-                        <th scope="row">
-                          <a href="#">
-                              <img src="{{ curso.photo.url }}" alt="" style="width: 50px; height: 50px; border-radius: 50%;">
-                          </a>
-                      </th>                      
-                        <td><a href="#" class="text-primary">{{ curso.nombre }}</a></td>
-                        <td>{{ curso.cupo}}</td>
-                        {% if curso.cupo > 0 %}
-                        <td>
-                          <form method="POST" action="{% url 'cursos:solicitud_inscripcion' curso.id %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="alumno_id" value="{{ alumno.id }}">
-                            <button type="submit" class="btn btn-success">Solicitar inscripción</button>
-                        </form>                        
-                        </td>
-                        {% else %}
-                            <td class="text-start"><button class="btn btn-danger">Sin vacantes</button></td>
-                        {% endif %}
-
-                      </tr>
-                      {% endfor %}
+                      <!--Filtro gestion_personas\templatetags\custom_filters.py-->
+                      {% for curso in cursos|filtro_fecha_cierre %}
+                      {% if curso.activo %}
+                          <tr>
+                              <th scope="row">
+                                  <a href="#">
+                                      <img src="{{ curso.photo.url }}" alt="" style="width: 50px; height: 50px; border-radius: 50%;">
+                                  </a>
+                              </th>                      
+                              <td><a href="#" class="text-primary">{{ curso.nombre }}</a></td>
+                              <td>{{ curso.cupo }}</td>
+                              {% if curso.cupo > 0 %}
+                                  <td>
+                                      <form method="POST" action="{% url 'cursos:solicitud_inscripcion' curso.id %}">
+                                          {% csrf_token %}
+                                          <input type="hidden" name="alumno_id" value="{{ alumno.id }}">
+                                          <button type="submit" class="btn btn-success">Solicitar inscripción</button>
+                                      </form>                        
+                                  </td>
+                              {% else %}
+                                  <td class="text-start"><button class="btn btn-danger">Sin vacantes</button></td>
+                              {% endif %}
+                          </tr>
+                      {% endif %}
+                  {% endfor %}
                     </tbody>
                   </table>
 

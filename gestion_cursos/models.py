@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 from gestion_personas.models import Alumno, Docente, Tutor
 
-
 class Categoria(models.Model):
     tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=255)
@@ -17,6 +16,21 @@ class Categoria(models.Model):
         return self.nombre
 
 
+
+'''  Relación de uno a muchos:
+     relación de uno a muchos con el modelo Categoria a través del campo categoria. 
+     Un objeto de Categoria puede estar relacionado con varios objetos de Curso, 
+     mientras que un objeto de Curso solo puede estar relacionado con un objeto de Categoria. 
+     Esta relación se define mediante la clave externa (ForeignKey) en el campo categoria.
+
+    Relación de muchos a muchos:
+    relación de muchos a muchos con el modelo Alumno a través del campo inscriptos. 
+    Esto se logra mediante el uso del atributo ManyToManyField. 
+    Un objeto de Curso puede tener varios objetos de Alumno inscritos, 
+    y un objeto de Alumno puede estar inscrito en varios objetos de Curso. 
+    Esta relación se gestiona mediante la tabla de unión Inscripcion, 
+    que se especifica a través del atributo through en el campo inscriptos.
+'''
 class Curso(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()

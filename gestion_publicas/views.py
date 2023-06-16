@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from gestion_cursos.models import Categoria, Curso
 from gestion_personas.models import Alumno, Docente, Tutor
+from gestion_personas.formrs.loginForm import LoginForm
 
 
 def home(request):
@@ -25,36 +26,42 @@ def home(request):
 
     
 
+
+
 def logIn(request):
     titulo = 'Auth'
-    context = {
-        'titulo': titulo
-    }
+    context = {'titulo': titulo}
 
     if request.method == 'POST':
-        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
-        if user is None:
-            return render(request, 'gestion_publicas/auth/pages-login.html', {
-                'Error': 'Usuario o Contraseña incorrecta'
-            })
-        else:
-            login(request, user)
-
-            if hasattr(user, 'alumno'):
-                if user.alumno.estado == 'Registro':
-                    return  redirect('personas:registro')
-                else:
-                    return  redirect('personas:dashboardAlumnos')
-            elif hasattr(user, 'docente'):
-                return  redirect('personas:dashboardDocentes')
-            elif hasattr(user, 'tutor'):
-                return  redirect('personas:dashboardTutores')
-            else:
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            if user is None:
                 return render(request, 'gestion_publicas/auth/pages-login.html', {
-                    'Error': 'No se encontró el usuario'
+                    'form': form,
+                    'Error': 'Usuario o Contraseña incorrecta'
                 })
+            else:
+                login(request, user)
 
+                if hasattr(user, 'alumno'):
+                    if user.alumno.estado == 'Registro':
+                        return redirect('personas:registro')
+                    else:
+                        return redirect('personas:dashboardAlumnos')
+                elif hasattr(user, 'docente'):
+                    return redirect('personas:dashboardDocentes')
+                elif hasattr(user, 'tutor'):
+                    return redirect('personas:dashboardTutores')
+                else:
+                    return render(request, 'gestion_publicas/auth/pages-login.html', {
+                        'form': form,
+                        'Error': 'No se encontró el usuario'
+                    })
+
+    context['form'] = LoginForm(request)
     return render(request, 'gestion_publicas/auth/pages-login.html', context)
+
 
 
 
